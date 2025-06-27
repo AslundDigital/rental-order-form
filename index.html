@@ -5,11 +5,11 @@
   <title>Rental Order Form</title>
   <style>
     .hidden { display: none; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
-    th { background-color: #f0f0f0; }
-    .heading-row { font-weight: bold; background-color: #eee; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+    th, td { padding: 8px; text-align: left; }
+    .form-table td:first-child { font-weight: bold; width: 200px; }
     input[type="number"] { width: 60px; }
+    textarea { width: 100%; max-width: 600px; }
   </style>
 </head>
 <body>
@@ -17,188 +17,54 @@
 <div id="step1">
   <h2>Step 1: Customer Information</h2>
   <form id="form1">
-    <label>Email: <input type="email" name="email" required /></label><br>
-    <label>First Name: <input type="text" name="firstName" required pattern="[A-Za-z]+" /></label><br>
-    <label>Last Name: <input type="text" name="lastName" required pattern="[A-Za-z]+" /></label><br>
-    <label>Phone: <input type="tel" name="phone" required pattern="[0-9]{10}" /></label><br>
-
-    <label>Rental Date:<br><input type="date" name="rentalDate" required />
-      <select name="rentalTime" required>
-        <option value="">-- Time --</option>
-        <option value="08:00">8:00 AM</option>
-        <option value="08:30">8:30 AM</option>
-        <option value="09:00">9:00 AM</option>
-        <option value="09:30">9:30 AM</option>
-        <option value="10:00">10:00 AM</option>
-        <option value="10:30">10:30 AM</option>
-        <option value="11:00">11:00 AM</option>
-        <option value="11:30">11:30 AM</option>
-        <option value="12:00">12:00 PM</option>
-        <option value="12:30">12:30 PM</option>
-        <option value="13:00">1:00 PM</option>
-        <option value="13:30">1:30 PM</option>
-        <option value="14:00">2:00 PM</option>
-        <option value="14:30">2:30 PM</option>
-        <option value="15:00">3:00 PM</option>
-        <option value="15:30">3:30 PM</option>
-        <option value="16:00">4:00 PM</option>
-        <option value="16:30">4:30 PM</option>
-        <option value="17:00">5:00 PM</option>
-      </select>
-    </label><br>
-
-    <label>Return Date:<br><input type="date" name="returnDate" required />
-      <select name="returnTime" required>
-        <option value="">-- Time --</option>
-        <option value="08:00">8:00 AM</option>
-        <option value="08:30">8:30 AM</option>
-        <option value="09:00">9:00 AM</option>
-        <option value="09:30">9:30 AM</option>
-        <option value="10:00">10:00 AM</option>
-        <option value="10:30">10:30 AM</option>
-        <option value="11:00">11:00 AM</option>
-        <option value="11:30">11:30 AM</option>
-        <option value="12:00">12:00 PM</option>
-        <option value="12:30">12:30 PM</option>
-        <option value="13:00">1:00 PM</option>
-        <option value="13:30">1:30 PM</option>
-        <option value="14:00">2:00 PM</option>
-        <option value="14:30">2:30 PM</option>
-        <option value="15:00">3:00 PM</option>
-        <option value="15:30">3:30 PM</option>
-        <option value="16:00">4:00 PM</option>
-        <option value="16:30">4:30 PM</option>
-        <option value="17:00">5:00 PM</option>
-      </select>
-    </label><br><br>
-
+    <table class="form-table">
+      <tr><td>Email:</td><td><input type="email" name="email" required /></td></tr>
+      <tr><td>First Name:</td><td><input type="text" name="firstName" required pattern="[A-Za-z]+" /></td></tr>
+      <tr><td>Last Name:</td><td><input type="text" name="lastName" required pattern="[A-Za-z]+" /></td></tr>
+      <tr><td>Phone:</td><td><input type="tel" name="phone" required pattern="[0-9]{10}" /></td></tr>
+      <tr>
+        <td>Rental Date & Time:</td>
+        <td>
+          <input type="date" name="rentalDate" required />
+          <select name="rentalTime" required>
+            <option value="">-- Time --</option>
+            <option value="08:00">8:00 AM</option><option value="08:30">8:30 AM</option>
+            <option value="09:00">9:00 AM</option><option value="09:30">9:30 AM</option>
+            <option value="10:00">10:00 AM</option><option value="10:30">10:30 AM</option>
+            <option value="11:00">11:00 AM</option><option value="11:30">11:30 AM</option>
+            <option value="12:00">12:00 PM</option><option value="12:30">12:30 PM</option>
+            <option value="13:00">1:00 PM</option><option value="13:30">1:30 PM</option>
+            <option value="14:00">2:00 PM</option><option value="14:30">2:30 PM</option>
+            <option value="15:00">3:00 PM</option><option value="15:30">3:30 PM</option>
+            <option value="16:00">4:00 PM</option><option value="16:30">4:30 PM</option>
+            <option value="17:00">5:00 PM</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Return Date & Time:</td>
+        <td>
+          <input type="date" name="returnDate" required />
+          <select name="returnTime" required>
+            <option value="">-- Time --</option>
+            <option value="08:00">8:00 AM</option><option value="08:30">8:30 AM</option>
+            <option value="09:00">9:00 AM</option><option value="09:30">9:30 AM</option>
+            <option value="10:00">10:00 AM</option><option value="10:30">10:30 AM</option>
+            <option value="11:00">11:00 AM</option><option value="11:30">11:30 AM</option>
+            <option value="12:00">12:00 PM</option><option value="12:30">12:30 PM</option>
+            <option value="13:00">1:00 PM</option><option value="13:30">1:30 PM</option>
+            <option value="14:00">2:00 PM</option><option value="14:30">2:30 PM</option>
+            <option value="15:00">3:00 PM</option><option value="15:30">3:30 PM</option>
+            <option value="16:00">4:00 PM</option><option value="16:30">4:30 PM</option>
+            <option value="17:00">5:00 PM</option>
+          </select>
+        </td>
+      </tr>
+    </table>
     <button type="submit">Continue to Items</button>
   </form>
 </div>
 
-<div id="step2" class="hidden">
-  <h2>Step 2: Select Items</h2>
-  <form id="form2">
-    <table id="items-table">
-      <thead>
-        <tr><th>Item</th><th>Rental/Day</th><th>Quantity</th></tr>
-      </thead>
-      <tbody id="item-rows">
-        <!-- Injected by script -->
-      </tbody>
-    </table>
-    <br>
-    <button type="submit">Continue to Staff + Notes</button>
-  </form>
-</div>
-
-<div id="step3" class="hidden">
-  <h2>Step 3: Additional Items & Staff Needs</h2>
-  <form id="form3">
-    <label>Please include any items not listed that you need, we can provide them through our rental partners:</label><br>
-    <textarea name="message" rows="4" cols="50" placeholder="Your message here..."></textarea><br><br>
-
-    <h3>STAFF</h3>
-    <label>Grip: <input type="number" name="staff_Grip" min="0" /></label><br>
-    <label>Craft Service: <input type="number" name="staff_Craft" min="0" /></label><br>
-    <label>Production Support: <input type="number" name="staff_Production" min="0" /></label><br><br>
-
-    <button type="submit">Submit Final Request</button>
-  </form>
-</div>
-
-<div id="confirmation" class="hidden">
-  <h2>Thank you!</h2>
-  <p>Your request has been submitted.</p>
-</div>
-
-<script>
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwfd4OkZrMObAc0NwGXpckka--GgSz2olgpXFZwxOeQyBAkS5DJktevKHhNXv01yT1c/exec";
-let customerEmail = "";
-
-// Step 1 submission
-document.getElementById("form1").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const data = new FormData(this);
-  customerEmail = data.get("email");
-  document.getElementById("step1").classList.add("hidden");
-  document.getElementById("step2").classList.remove("hidden");
-
-  // Load item rows dynamically (simulate with JS array — replace with fetch from sheet if needed)
-  const rows = [
-    { name: "CAMERA", price: "" },
-    { name: "Canon C300", price: "150" },
-    { name: "Sony FX3", price: "120" },
-    { name: "LIGHTING", price: "" },
-    { name: "Aputure 300D", price: "80" },
-    { name: "Nanlite 60B", price: "50" },
-  ];
-
-  const tbody = document.getElementById("item-rows");
-  tbody.innerHTML = "";
-  rows.forEach(row => {
-    const tr = document.createElement("tr");
-    if (!row.price) {
-      tr.classList.add("heading-row");
-      tr.innerHTML = `<td colspan="3">${row.name}</td>`;
-    } else {
-      tr.innerHTML = `
-        <td>${row.name}</td>
-        <td>${row.price}</td>
-        <td><input type="number" name="qty_${row.name}" min="0" /></td>
-      `;
-    }
-    tbody.appendChild(tr);
-  });
-});
-
-// Step 2 submission
-document.getElementById("form2").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const form = new FormData(this);
-  const items = [];
-  for (const [key, val] of form.entries()) {
-    if (key.startsWith("qty_") && val) {
-      const name = key.replace("qty_", "");
-      const price = document.querySelector(`td:contains('${name}')`)?.nextSibling?.textContent || "";
-      items.push({ name, quantity: val, price });
-    }
-  }
-
-  fetch(SHEET_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      type: "step2",
-      email: customerEmail,
-      items: JSON.stringify(items)
-    })
-  }).then(() => {
-    document.getElementById("step2").classList.add("hidden");
-    document.getElementById("step3").classList.remove("hidden");
-  });
-});
-
-// Step 3 submission
-document.getElementById("form3").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const form = new FormData(this);
-  fetch(SHEET_URL, {
-    method: "POST",
-    body: new URLSearchParams({
-      type: "step3",
-      email: customerEmail,
-      message: form.get("message"),
-      staff: JSON.stringify({
-        Grip: form.get("staff_Grip"),
-        Craft: form.get("staff_Craft"),
-        Production: form.get("staff_Production")
-      })
-    })
-  }).then(() => {
-    document.getElementById("step3").classList.add("hidden");
-    document.getElementById("confirmation").classList.remove("hidden");
-  });
-});
-</script>
+<!-- Placeholder for steps 2 and 3 to be injected later -->
 </body>
 </html>
