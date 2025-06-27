@@ -4,142 +4,125 @@
 <head>
   <title>Rental Order Form</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
     .hidden { display: none; }
-    .form-row { display: flex; margin-bottom: 10px; }
-    .form-row label { width: 150px; font-weight: bold; }
-    .form-row input, .form-row textarea { flex: 1; padding: 4px; }
+    .form-row { display: flex; margin-bottom: 10px; align-items: center; }
+    .form-row label { width: 160px; font-weight: bold; }
+    .form-row input, .form-row textarea { flex: 1; padding: 5px; }
   </style>
 </head>
 <body>
-
-<h2>Step 1: Customer Information</h2>
-<form id="step1-form">
-  <div class="form-row"><label>First Name:</label><input type="text" name="firstName" required></div>
-  <div class="form-row"><label>Last Name:</label><input type="text" name="lastName" required></div>
-  <div class="form-row"><label>Email:</label><input type="email" name="email" required></div>
-  <div class="form-row"><label>Phone:</label><input type="tel" name="phone" pattern="\d{10}" required></div>
-  <div class="form-row"><label>Rental Date:</label><input type="date" name="rentalDate" required></div>
-  <div class="form-row"><label>Rental Time:</label><input type="time" name="rentalTime" required></div>
-  <div class="form-row"><label>Return Date:</label><input type="date" name="returnDate" required></div>
-  <div class="form-row"><label>Return Time:</label><input type="time" name="returnTime" required></div>
-  <button type="submit">Continue to Step 2</button>
-</form>
-
-<div id="step2" class="hidden">
-  <h2>Step 2: Select Items</h2>
-  <form id="step2-form">
-    <div id="items-container"></div>
-    <input type="hidden" name="email" id="emailHidden">
-    <button type="submit">Continue to Step 3</button>
+  <h2>Step 1: Customer Info</h2>
+  <form id="step1-form">
+    <div class="form-row"><label>First Name:</label><input type="text" name="firstName" required></div>
+    <div class="form-row"><label>Last Name:</label><input type="text" name="lastName" required></div>
+    <div class="form-row"><label>Email:</label><input type="email" name="email" required></div>
+    <div class="form-row"><label>Phone:</label><input type="tel" name="phone" pattern="\d{10}" required></div>
+    <div class="form-row"><label>Rental Date:</label><input type="date" name="rentalDate" required></div>
+    <div class="form-row"><label>Return Date:</label><input type="date" name="returnDate" required></div>
+    <button type="submit">Continue to Step 2</button>
   </form>
-</div>
 
-<div id="step3" class="hidden">
-  <h2>Step 3: Additional Requests</h2>
-  <form id="step3-form">
-    <div class="form-row"><label>Additional Comments:</label><textarea name="message" rows="4" required></textarea></div>
-    <input type="hidden" name="email" id="emailHidden2">
-    <button type="submit">Submit Order</button>
-  </form>
-</div>
+  <div id="step2" class="hidden">
+    <h2>Step 2: Select Items</h2>
+    <form id="step2-form">
+      <div id="items-container"></div>
+      <button type="submit">Continue to Step 3</button>
+    </form>
+  </div>
 
-<div id="response"></div>
+  <div id="step3" class="hidden">
+    <h2>Step 3: Additional Comments</h2>
+    <form id="step3-form">
+      <div class="form-row"><label>Comment:</label><textarea name="comment" rows="4" placeholder="Optional comment..."></textarea></div>
+      <button type="submit">Submit Order</button>
+    </form>
+  </div>
 
-<script>
-const webAppURL = "https://script.google.com/macros/s/AKfycbwfd4OkZrMObAc0NwGXpckka--GgSz2olgpXFZwxOeQyBAkS5DJktevKHhNXv01yT1c/exec";
+  <div id="response"></div>
 
-// Step 1 Submission
-document.getElementById("step1-form").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const form = new FormData(this);
-  fetch(webAppURL, {
-    method: "POST",
-    body: new URLSearchParams({
-      type: "step1",
-      firstName: form.get("firstName"),
-      lastName: form.get("lastName"),
-      email: form.get("email"),
-      phone: form.get("phone"),
-      rentalDate: form.get("rentalDate"),
-      rentalTime: form.get("rentalTime"),
-      returnDate: form.get("returnDate"),
-      returnTime: form.get("returnTime")
-    })
-  }).then(() => {
-    const email = form.get("email");
-    document.getElementById("emailHidden").value = email;
-    document.getElementById("emailHidden2").value = email;
-    document.getElementById("step1-form").classList.add("hidden");
-    document.getElementById("step2").classList.remove("hidden");
-    loadItems();
-  });
-});
+  <script>
+    const webAppURL = "https://script.google.com/macros/s/AKfycbwfd4OkZrMObAc0NwGXpckka--GgSz2olgpXFZwxOeQyBAkS5DJktevKHhNXv01yT1c/exec";
 
-// Load inventory from sheet
-function loadItems() {
-  fetch(webAppURL)
-    .then(res => res.json())
-    .then(items => {
-      const container = document.getElementById("items-container");
-      container.innerHTML = "";
-      items.forEach(item => {
-        const row = document.createElement("div");
-        row.className = "form-row";
-        row.innerHTML = `
-          <label>${item.name}${item.price ? " ($" + item.price + "/day)" : ""}</label>
-          ${item.price ? `<input type="number" min="0" name="${item.name}" style="width:70px;">` : ""}
-        `;
-        container.appendChild(row);
+    const customerInfo = {};
+
+    document.getElementById("step1-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = new FormData(this);
+      customerInfo.firstName = form.get("firstName");
+      customerInfo.lastName = form.get("lastName");
+      customerInfo.email = form.get("email");
+      customerInfo.phone = form.get("phone");
+      customerInfo.rentalDate = form.get("rentalDate");
+      customerInfo.returnDate = form.get("returnDate");
+
+      document.getElementById("step1-form").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+      loadItems();
+    });
+
+    function loadItems() {
+      fetch(webAppURL)
+        .then(res => res.json())
+        .then(items => {
+          const container = document.getElementById("items-container");
+          container.innerHTML = "";
+          items.forEach(item => {
+            const row = document.createElement("div");
+            row.className = "form-row";
+            row.innerHTML = `
+              <label>${item.name}${item.price ? " ($" + item.price + "/day)" : ""}</label>
+              ${item.price ? `<input type="number" min="0" name="${item.name}" style="width:70px;">` : ""}
+            `;
+            container.appendChild(row);
+          });
+        });
+    }
+
+    let selectedItems = [];
+
+    document.getElementById("step2-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const inputs = this.querySelectorAll("input[type='number']");
+      selectedItems = [];
+
+      inputs.forEach(input => {
+        if (input.value && parseInt(input.value) > 0) {
+          const label = input.previousSibling.textContent;
+          const priceMatch = label.match(/\$(\d+(\.\d+)?)/);
+          selectedItems.push({
+            name: input.name,
+            quantity: input.value,
+            price: priceMatch ? priceMatch[1] : ""
+          });
+        }
+      });
+
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step3").classList.remove("hidden");
+    });
+
+    document.getElementById("step3-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const comment = new FormData(this).get("comment");
+      fetch(webAppURL, {
+        method: "POST",
+        body: new URLSearchParams({
+          type: "final",
+          email: customerInfo.email,
+          firstName: customerInfo.firstName,
+          lastName: customerInfo.lastName,
+          phone: customerInfo.phone,
+          rentalDate: customerInfo.rentalDate,
+          returnDate: customerInfo.returnDate,
+          items: JSON.stringify(selectedItems),
+          comment: comment
+        })
+      }).then(() => {
+        document.getElementById("step3").classList.add("hidden");
+        document.getElementById("response").innerText = "Order submitted successfully!";
       });
     });
-}
-
-// Step 2 Submission
-document.getElementById("step2-form").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const form = new FormData(this);
-  const items = [];
-  for (let [key, value] of form.entries()) {
-    if (key !== "email" && value) {
-      const label = document.querySelector(`input[name="${key}"]`).previousSibling.textContent;
-      const priceMatch = label.match(/\$(\d+(\.\d+)?)/);
-      items.push({
-        name: key,
-        quantity: value,
-        price: priceMatch ? priceMatch[1] : ""
-      });
-    }
-  }
-  fetch(webAppURL, {
-    method: "POST",
-    body: new URLSearchParams({
-      type: "step2",
-      email: form.get("email"),
-      items: JSON.stringify(items)
-    })
-  }).then(() => {
-    document.getElementById("step2").classList.add("hidden");
-    document.getElementById("step3").classList.remove("hidden");
-  });
-});
-
-// Step 3 Submission
-document.getElementById("step3-form").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const form = new FormData(this);
-  fetch(webAppURL, {
-    method: "POST",
-    body: new URLSearchParams({
-      type: "step3",
-      email: form.get("email"),
-      message: form.get("message")
-    })
-  }).then(() => {
-    document.getElementById("step3").classList.add("hidden");
-    document.getElementById("response").innerText = "Order submitted successfully!";
-  });
-});
-</script>
+  </script>
 </body>
 </html>
