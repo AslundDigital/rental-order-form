@@ -86,7 +86,7 @@
     <!-- STEP 3 -->
     <div id="step3" class="step">
       <h4 class="mb-3">Additional Information</h4>
-      <textarea class="form-control mb-3" id="comment" rows="5" maxlength="2000" placeholder="Please let us know any other items we can provide, or any information to help us serve you. Someone will be in touch shortly."></textarea>
+      <textarea class="form-control mb-3" id="comment" rows="5" maxlength="2000" placeholder="Please let us know any other items we can provide, or any information to help us serve you."></textarea>
       <button class="btn btn-success w-100" onclick="submitStep3()">Send Inquiry</button>
     </div>
 
@@ -99,7 +99,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwchjoMLVXNGaYMo89UdH1zsksL9JnORQVDse2mKi0K8l2cTHuc92MK6P0m0WGIaNb7/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoRMcQ0M90lBzmx_8XuVrJxLC-mZT-Bz7JKJmshnxULvpOmuVQ-wbWHhG4TPsCtF__/exec';
 
 let userEmail = '';
 
@@ -176,6 +176,10 @@ function submitStep2() {
       });
     }
   });
+  if(items.length === 0) {
+    alert('Please select at least one item.');
+    return;
+  }
   fetch(SCRIPT_URL, {
     method: 'POST',
     body: JSON.stringify({action:'submitStep2', email:userEmail, items})
