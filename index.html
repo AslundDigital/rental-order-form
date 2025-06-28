@@ -104,7 +104,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwchjoMLVXNGaYMo89Ud
 let userEmail = '';
 
 function updateProgress(step) {
-  ['step1','step2','step3'].forEach((s,i)=>{
+  ['step1','step2','step3'].forEach((s)=>{
     document.getElementById('progress-'+s).classList.toggle('active', s === step);
   });
 }
@@ -117,6 +117,7 @@ function showStep(step) {
 
 function submitStep1() {
   const data = {
+    action: 'submitStep1',
     email: document.getElementById('email').value.trim(),
     firstName: document.getElementById('firstName').value.trim(),
     lastName: document.getElementById('lastName').value.trim(),
@@ -128,8 +129,8 @@ function submitStep1() {
     alert('Please fill in all required fields.');
     return;
   }
-  fetch(SCRIPT_URL + '?action=submitStep1', {
-    method:'POST',
+  fetch(SCRIPT_URL, {
+    method: 'POST',
     body: JSON.stringify(data)
   }).then(res=>res.text()).then(()=>{
     userEmail = data.email;
@@ -139,7 +140,10 @@ function submitStep1() {
 }
 
 function loadInventory() {
-  fetch(SCRIPT_URL + '?action=getInventory')
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({action:'getInventory'})
+  })
   .then(res=>res.json())
   .then(data=>{
     const container = document.getElementById('inventoryList');
@@ -172,9 +176,9 @@ function submitStep2() {
       });
     }
   });
-  fetch(SCRIPT_URL + '?action=submitStep2', {
-    method:'POST',
-    body: JSON.stringify({email:userEmail, items})
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({action:'submitStep2', email:userEmail, items})
   }).then(res=>res.text()).then(()=>{
     updateProgress('step3');
     showStep('step3');
@@ -183,9 +187,9 @@ function submitStep2() {
 
 function submitStep3() {
   const comment = document.getElementById('comment').value.trim();
-  fetch(SCRIPT_URL + '?action=submitStep3', {
-    method:'POST',
-    body: JSON.stringify({email:userEmail, comment})
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({action:'submitStep3', email:userEmail, comment})
   }).then(res=>res.text()).then(()=>{
     showStep('thankYou');
   });
