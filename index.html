@@ -144,39 +144,49 @@ function loadInventory() {
     method: 'POST',
     body: JSON.stringify({action:'getInventory'})
   })
-  .then(res=>res.json())
-  .then(data=>{
+  .then(res => res.json())
+  .then(data => {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
-    data.forEach((item,i)=>{
-      if(!item[0] || item[0].trim()==='') return; // skip empty rows
-      if(!item[1] || item[1].trim()==='') {
-        // Category label
+
+    for (let i = 0; i < data.length; i++) {
+      const rowData = data[i];
+      const itemName = rowData[0] ? rowData[0].trim() : '';
+      const itemPrice = rowData[1] ? rowData[1].trim() : '';
+
+      // Skip fully empty rows
+      if (itemName === '' && itemPrice === '') continue;
+
+      // Category header
+      if (itemName !== '' && itemPrice === '') {
         const label = document.createElement('div');
         label.className = 'fw-bold fs-5 py-2';
-        label.textContent = item[0];
+        label.textContent = itemName;
         container.appendChild(label);
-      } else {
+        continue;
+      }
+
+      // Regular item
+      if (itemName !== '' && itemPrice !== '') {
         const row = document.createElement('div');
         row.className = 'd-flex align-items-center mb-2';
         row.innerHTML = `
           <div class="flex-grow-1">
-            <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
+            <strong>${itemName}</strong><br><small>$${itemPrice} per day</small>
           </div>
           <input
             type="number"
             class="form-control"
-            id="qty${i}"
             placeholder="Qty"
             min="0"
             style="width:80px;"
-            data-item="${item[0]}"
-            data-price="${item[1]}"
+            data-item="${itemName}"
+            data-price="${itemPrice}"
           >
         `;
         container.appendChild(row);
       }
-    });
+    }
   });
 }
 
