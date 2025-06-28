@@ -149,24 +149,33 @@ function loadInventory() {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
     data.forEach((item,i)=>{
-      const row = document.createElement('div');
-      row.className = 'd-flex align-items-center mb-2';
-      row.innerHTML = `
-        <div class="flex-grow-1">
-          <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
-        </div>
-        <input
-          type="number"
-          class="form-control"
-          id="qty${i}"
-          placeholder="Qty"
-          min="0"
-          style="width:80px;"
-          data-item="${item[0]}"
-          data-price="${item[1]}"
-        >
-      `;
-      container.appendChild(row);
+      if(!item[0] || item[0].trim()==='') return; // skip empty rows
+      if(!item[1] || item[1].trim()==='') {
+        // Category label
+        const label = document.createElement('div');
+        label.className = 'fw-bold fs-5 py-2';
+        label.textContent = item[0];
+        container.appendChild(label);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center mb-2';
+        row.innerHTML = `
+          <div class="flex-grow-1">
+            <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="qty${i}"
+            placeholder="Qty"
+            min="0"
+            style="width:80px;"
+            data-item="${item[0]}"
+            data-price="${item[1]}"
+          >
+        `;
+        container.appendChild(row);
+      }
     });
   });
 }
