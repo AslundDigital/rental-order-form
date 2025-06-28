@@ -66,12 +66,12 @@
         <input type="tel" class="form-control" id="phone" placeholder="Phone Number">
       </div>
       <div class="mb-2">
-        <label class="form-label">Rental Date</label>
-        <input type="date" class="form-control" id="rentalDate" required>
+        <label class="form-label">Rental Start Date & Time</label>
+        <input type="datetime-local" class="form-control" id="rentalDateTime" step="1800" required>
       </div>
       <div class="mb-3">
-        <label class="form-label">Return Date</label>
-        <input type="date" class="form-control" id="returnDate" required>
+        <label class="form-label">Return Date & Time</label>
+        <input type="datetime-local" class="form-control" id="returnDateTime" step="1800" required>
       </div>
       <button class="btn btn-primary w-100" onclick="submitStep1()">Next</button>
     </div>
@@ -122,10 +122,10 @@ function submitStep1() {
     firstName: document.getElementById('firstName').value.trim(),
     lastName: document.getElementById('lastName').value.trim(),
     phone: document.getElementById('phone').value.trim(),
-    rentalDate: document.getElementById('rentalDate').value,
-    returnDate: document.getElementById('returnDate').value
+    rentalDateTime: document.getElementById('rentalDateTime').value,
+    returnDateTime: document.getElementById('returnDateTime').value
   };
-  if(!data.email || !data.firstName || !data.lastName || !data.rentalDate || !data.returnDate) {
+  if(!data.email || !data.firstName || !data.lastName || !data.rentalDateTime || !data.returnDateTime) {
     alert('Please fill in all required fields.');
     return;
   }
@@ -155,7 +155,16 @@ function loadInventory() {
         <div class="flex-grow-1">
           <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
         </div>
-        <input type="number" class="form-control" id="qty${i}" placeholder="Qty" min="0" style="width:80px;">
+        <input
+          type="number"
+          class="form-control"
+          id="qty${i}"
+          placeholder="Qty"
+          min="0"
+          style="width:80px;"
+          data-item="${item[0]}"
+          data-price="${item[1]}"
+        >
       `;
       container.appendChild(row);
     });
@@ -166,12 +175,12 @@ function submitStep2() {
   const container = document.getElementById('inventoryList');
   const inputs = container.querySelectorAll('input[type=number]');
   const items = [];
-  inputs.forEach((input,i)=>{
+  inputs.forEach(input=>{
     const qty = parseInt(input.value,10);
     if(qty > 0) {
       items.push({
-        item: container.children[i].querySelector('strong').innerText,
-        price: container.children[i].querySelector('small').innerText.replace(/[^0-9.]/g,''),
+        item: input.dataset.item,
+        price: input.dataset.price,
         quantity: qty
       });
     }
