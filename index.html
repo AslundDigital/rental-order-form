@@ -1,127 +1,128 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>Rental Order Form</title>
+  <meta charset="UTF-8" />
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; }
+    h2 { border-bottom: 1px solid #ccc; padding-bottom: 5px; }
+    label { display: block; margin: 10px 0 5px; }
+    input, textarea, select { width: 100%; padding: 8px; margin-bottom: 15px; }
+    .item-row { display: flex; align-items: center; margin-bottom: 10px; }
+    .item-row span { flex: 1; }
+    .item-row input { width: 60px; }
     .hidden { display: none; }
-    .form-row { display: flex; margin-bottom: 10px; align-items: center; }
-    .form-row label { width: 160px; font-weight: bold; }
-    .form-row input, .form-row textarea { flex: 1; padding: 5px; }
+    .step { margin-bottom: 30px; }
+    button { padding: 10px 20px; }
   </style>
 </head>
 <body>
-  <h2>Step 1: Customer Info</h2>
-  <form id="step1-form">
-    <div class="form-row"><label>First Name:</label><input type="text" name="firstName" required></div>
-    <div class="form-row"><label>Last Name:</label><input type="text" name="lastName" required></div>
-    <div class="form-row"><label>Email:</label><input type="email" name="email" required></div>
-    <div class="form-row"><label>Phone:</label><input type="tel" name="phone" pattern="\d{10}" required></div>
-    <div class="form-row"><label>Rental Date:</label><input type="date" name="rentalDate" required></div>
-    <div class="form-row"><label>Return Date:</label><input type="date" name="returnDate" required></div>
-    <button type="submit">Continue to Step 2</button>
+  <h1>Rental Order Form</h1>
+  <form id="rentalForm">
+    <!-- Step 1: Customer Info -->
+    <div class="step" id="step1">
+      <h2>Step 1: Your Information</h2>
+      <label>First Name<input type="text" name="firstName" required></label>
+      <label>Last Name<input type="text" name="lastName" required></label>
+      <label>Email<input type="email" name="email" required></label>
+      <label>Phone<input type="tel" name="phone" required></label>
+      <label>Rental Date<input type="date" name="rentalDate" required></label>
+      <label>Return Date<input type="date" name="returnDate" required></label>
+      <button type="button" onclick="showStep(2)">Next</button>
+    </div>
+
+    <!-- Step 2: Items -->
+    <div class="step hidden" id="step2">
+      <h2>Step 2: Select Items</h2>
+      <div id="itemsContainer"></div>
+      <button type="button" onclick="showStep(1)">Back</button>
+      <button type="button" onclick="showStep(3)">Next</button>
+    </div>
+
+    <!-- Step 3: Comments and Submit -->
+    <div class="step hidden" id="step3">
+      <h2>Step 3: Additional Comments</h2>
+      <label>Comments<textarea name="comment"></textarea></label>
+      <button type="button" onclick="showStep(2)">Back</button>
+      <button type="submit">Submit</button>
+    </div>
   </form>
 
-  <div id="step2" class="hidden">
-    <h2>Step 2: Select Items</h2>
-    <form id="step2-form">
-      <div id="items-container"></div>
-      <button type="submit">Continue to Step 3</button>
-    </form>
-  </div>
-
-  <div id="step3" class="hidden">
-    <h2>Step 3: Additional Comments</h2>
-    <form id="step3-form">
-      <div class="form-row"><label>Comment:</label><textarea name="comment" rows="4" placeholder="Optional comment..."></textarea></div>
-      <button type="submit">Submit Order</button>
-    </form>
-  </div>
-
-  <div id="response"></div>
+  <div id="message"></div>
 
   <script>
-    const webAppURL = "https://script.google.com/macros/s/AKfycbwfd4OkZrMObAc0NwGXpckka--GgSz2olgpXFZwxOeQyBAkS5DJktevKHhNXv01yT1c/exec";
+    const webAppURL = "https://script.google.com/macros/s/AKfycbwchjoMLVXNGaYMo89UdH1zsksL9JnORQVDse2mKi0K8l2cTHuc92MK6P0m0WGIaNb7/exec";
 
-    const customerInfo = {};
-
-    document.getElementById("step1-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const form = new FormData(this);
-      customerInfo.firstName = form.get("firstName");
-      customerInfo.lastName = form.get("lastName");
-      customerInfo.email = form.get("email");
-      customerInfo.phone = form.get("phone");
-      customerInfo.rentalDate = form.get("rentalDate");
-      customerInfo.returnDate = form.get("returnDate");
-
-      document.getElementById("step1-form").classList.add("hidden");
-      document.getElementById("step2").classList.remove("hidden");
-      loadItems();
-    });
-
-    function loadItems() {
-      fetch(webAppURL)
-        .then(res => res.json())
-        .then(items => {
-          const container = document.getElementById("items-container");
-          container.innerHTML = "";
-          items.forEach(item => {
-            const row = document.createElement("div");
-            row.className = "form-row";
-            row.innerHTML = `
-              <label>${item.name}${item.price ? " ($" + item.price + "/day)" : ""}</label>
-              ${item.price ? `<input type="number" min="0" name="${item.name}" style="width:70px;">` : ""}
-            `;
-            container.appendChild(row);
-          });
-        });
+    function showStep(step) {
+      document.querySelectorAll('.step').forEach((el, i) => {
+        el.classList.toggle('hidden', i !== (step - 1));
+      });
     }
 
-    let selectedItems = [];
+    // Load inventory from Sheet
+    fetch(webAppURL + "?type=inventory")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('itemsContainer');
+        data.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'item-row';
+          row.innerHTML = `
+            <span>${item.name} ($${item.price}/day)</span>
+            <input type="number" min="0" data-name="${item.name}" data-price="${item.price}" placeholder="Qty">
+          `;
+          container.appendChild(row);
+        });
+      });
 
-    document.getElementById("step2-form").addEventListener("submit", function(e) {
+    // Handle form submission
+    document.getElementById("rentalForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const inputs = this.querySelectorAll("input[type='number']");
-      selectedItems = [];
 
-      inputs.forEach(input => {
-        if (input.value && parseInt(input.value) > 0) {
-          const label = input.previousSibling.textContent;
-          const priceMatch = label.match(/\$(\d+(\.\d+)?)/);
-          selectedItems.push({
-            name: input.name,
-            quantity: input.value,
-            price: priceMatch ? priceMatch[1] : ""
+      const form = e.target;
+      const items = [];
+      document.querySelectorAll('#itemsContainer input').forEach(input => {
+        const qty = parseInt(input.value);
+        if (qty > 0) {
+          items.push({
+            name: input.dataset.name,
+            price: parseFloat(input.dataset.price),
+            quantity: qty
           });
         }
       });
 
-      document.getElementById("step2").classList.add("hidden");
-      document.getElementById("step3").classList.remove("hidden");
-    });
+      if (items.length === 0) {
+        alert("Please select at least one item.");
+        return;
+      }
 
-    document.getElementById("step3-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const comment = new FormData(this).get("comment");
+      const formData = new FormData(form);
+      const payload = {
+        type: "final",
+        firstName: formData.get("firstName"),
+        lastName: formData.get("lastName"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        rentalDate: formData.get("rentalDate"),
+        returnDate: formData.get("returnDate"),
+        comment: formData.get("comment"),
+        items: JSON.stringify(items)
+      };
+
       fetch(webAppURL, {
         method: "POST",
-        body: new URLSearchParams({
-          type: "final",
-          email: customerInfo.email,
-          firstName: customerInfo.firstName,
-          lastName: customerInfo.lastName,
-          phone: customerInfo.phone,
-          rentalDate: customerInfo.rentalDate,
-          returnDate: customerInfo.returnDate,
-          items: JSON.stringify(selectedItems),
-          comment: comment
+        body: new URLSearchParams(payload)
+      })
+        .then(res => res.text())
+        .then(response => {
+          document.getElementById("rentalForm").reset();
+          showStep(1);
+          document.getElementById("message").innerText = "Order submitted successfully!";
         })
-      }).then(() => {
-        document.getElementById("step3").classList.add("hidden");
-        document.getElementById("response").innerText = "Order submitted successfully!";
-      });
+        .catch(err => {
+          document.getElementById("message").innerText = "Error submitting order.";
+        });
     });
   </script>
 </body>
