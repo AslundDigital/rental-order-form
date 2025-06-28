@@ -157,6 +157,7 @@ function loadInventory() {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
     data.forEach((item,i)=>{
+      if(!item[0] || item[0].trim() === '') return; // skip blank rows
       if(!item[1] || item[1].trim() === '') {
         // Category label
         const label = document.createElement('div');
