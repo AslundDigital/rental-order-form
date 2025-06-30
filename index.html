@@ -99,7 +99,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoRMcQ0M90lBzmx_8XuVrJxLC-mZT-Bz7JKJmshnxULvpOmuVQ-wbWHhG4TPsCtF__/exec';
+const SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE'; // Replace with your actual Apps Script URL
 
 let userEmail = '';
 
@@ -149,24 +149,36 @@ function loadInventory() {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
     data.forEach((item,i)=>{
-      const row = document.createElement('div');
-      row.className = 'd-flex align-items-center mb-2';
-      row.innerHTML = `
-        <div class="flex-grow-1">
-          <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
-        </div>
-        <input
-          type="number"
-          class="form-control"
-          id="qty${i}"
-          placeholder="Qty"
-          min="0"
-          style="width:80px;"
-          data-item="${item[0]}"
-          data-price="${item[1]}"
-        >
-      `;
-      container.appendChild(row);
+      const itemName = item[0]?.trim();
+      const itemPrice = item[1]?.trim();
+      if(itemName && !itemPrice){
+        // Category header
+        const header = document.createElement('div');
+        header.className = 'fw-bold text-primary mt-3 mb-2';
+        header.textContent = itemName;
+        container.appendChild(header);
+      } else if(itemName && itemPrice){
+        // Rental item
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center mb-2';
+        row.innerHTML = `
+          <div class="flex-grow-1">
+            <strong>${itemName}</strong><br><small>$${itemPrice} per day</small>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="qty${i}"
+            placeholder="Qty"
+            min="0"
+            style="width:80px;"
+            data-item="${itemName}"
+            data-price="${itemPrice}"
+          >
+        `;
+        container.appendChild(row);
+      }
+      // Else: skip blank rows
     });
   });
 }
