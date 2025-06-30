@@ -144,20 +144,21 @@ function loadInventory() {
     method: 'POST',
     body: JSON.stringify({action:'getInventory'})
   })
-  .then(res=>res.json())
-  .then(data=>{
+  .then(res => res.json())
+  .then(data => {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
-    data.forEach((item,i)=>{
+    data.forEach((item, i) => {
       const itemName = item[0]?.trim();
       const itemPrice = item[1]?.trim();
-      if(itemName && !itemPrice){
+
+      if (itemPrice === "HEADER") {
         // Category header
         const header = document.createElement('div');
         header.className = 'fw-bold text-primary mt-3 mb-2';
         header.textContent = itemName;
         container.appendChild(header);
-      } else if(itemName && itemPrice){
+      } else if (itemName && itemPrice) {
         // Rental item
         const row = document.createElement('div');
         row.className = 'd-flex align-items-center mb-2';
@@ -178,7 +179,7 @@ function loadInventory() {
         `;
         container.appendChild(row);
       }
-      // Else: skip blank rows
+      // Skip any rows missing data
     });
   });
 }
