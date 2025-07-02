@@ -99,6 +99,7 @@
 </div>
 
 <script>
+// ✅ Your deployed Apps Script URL
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwoRMcQ0M90lBzmx_8XuVrJxLC-mZT-Bz7JKJmshnxULvpOmuVQ-wbWHhG4TPsCtF__/exec';
 
 let userEmail = '';
@@ -144,29 +145,40 @@ function loadInventory() {
     method: 'POST',
     body: JSON.stringify({action:'getInventory'})
   })
-  .then(res=>res.json())
-  .then(data=>{
+  .then(res => res.json())
+  .then(data => {
     const container = document.getElementById('inventoryList');
     container.innerHTML = '';
-    data.forEach((item,i)=>{
-      const row = document.createElement('div');
-      row.className = 'd-flex align-items-center mb-2';
-      row.innerHTML = `
-        <div class="flex-grow-1">
-          <strong>${item[0]}</strong><br><small>$${item[1]} per day</small>
-        </div>
-        <input
-          type="number"
-          class="form-control"
-          id="qty${i}"
-          placeholder="Qty"
-          min="0"
-          style="width:80px;"
-          data-item="${item[0]}"
-          data-price="${item[1]}"
-        >
-      `;
-      container.appendChild(row);
+
+    data.forEach((item, i) => {
+      const itemName = item[0];
+      const price = item[1];
+
+      if (price === "CATEGORY" || price === "") {
+        const header = document.createElement('div');
+        header.className = 'mt-4 mb-2 fw-semibold text-primary border-bottom pb-1';
+        header.textContent = itemName;
+        container.appendChild(header);
+      } else {
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center mb-2';
+        row.innerHTML = `
+          <div class="flex-grow-1">
+            <strong>${itemName}</strong><br><small>$${price} per day</small>
+          </div>
+          <input
+            type="number"
+            class="form-control"
+            id="qty${i}"
+            placeholder="Qty"
+            min="0"
+            style="width:80px;"
+            data-item="${itemName}"
+            data-price="${price}"
+          >
+        `;
+        container.appendChild(row);
+      }
     });
   });
 }
@@ -175,7 +187,7 @@ function submitStep2() {
   const container = document.getElementById('inventoryList');
   const inputs = container.querySelectorAll('input[type=number]');
   const items = [];
-  inputs.forEach(input=>{
+  inputs.forEach(input => {
     const qty = parseInt(input.value,10);
     if(qty > 0) {
       items.push({
