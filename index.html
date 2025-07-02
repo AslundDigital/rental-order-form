@@ -152,7 +152,8 @@ function loadInventory() {
 
     data.forEach((item, i) => {
       const itemName = item[0];
-      const price = item[1];
+      const priceRaw = item[1];
+      const price = priceRaw ? priceRaw.toString().trim().toUpperCase() : "";
 
       if (price === "CATEGORY" || price === "") {
         const header = document.createElement('div');
@@ -164,7 +165,7 @@ function loadInventory() {
         row.className = 'd-flex align-items-center mb-2';
         row.innerHTML = `
           <div class="flex-grow-1">
-            <strong>${itemName}</strong><br><small>$${price} per day</small>
+            <strong>${itemName}</strong><br><small>$${priceRaw} per day</small>
           </div>
           <input
             type="number"
@@ -174,7 +175,7 @@ function loadInventory() {
             min="0"
             style="width:80px;"
             data-item="${itemName}"
-            data-price="${price}"
+            data-price="${priceRaw}"
           >
         `;
         container.appendChild(row);
@@ -222,3 +223,4 @@ function submitStep3() {
 </script>
 </body>
 </html>
+
